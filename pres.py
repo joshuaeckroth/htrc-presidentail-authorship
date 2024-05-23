@@ -15,36 +15,6 @@ console = rich.get_console()
 model = models.LlamaCpp("Phi-3-mini-4k-instruct-fp16.gguf", echo=False)
 
 pres_choices = [
-    "George Washington",
-    "John Adams",
-    "Thomas Jefferson",
-    "James Madison",
-    "James Monroe",
-    "John Quincy Adams",
-    "Andrew Jackson",
-    "Martin Van Buren",
-    "William Henry Harrison",
-    "John Tyler",
-    "James K. Polk",
-    "Zachary Taylor",
-    "Millard Fillmore",
-    "Franklin Pierce",
-    "James Buchanan",
-    "Abraham Lincoln",
-    "Andrew Johnson",
-    "Ulysses S. Grant",
-    "Rutherford B. Hayes",
-    "James A. Garfield",
-    "Chester A. Arthur",
-    "Grover Cleveland",
-    "Benjamin Harrison",
-    "Grover Cleveland",
-    "William McKinley",
-    "Theodore Roosevelt",
-    "William Howard Taft",
-    "Woodrow Wilson",
-    "Warren G. Harding",
-    "Calvin Coolidge",
     "Herbert Hoover",
     "Franklin D. Roosevelt",
     "Harry S. Truman",
@@ -59,8 +29,6 @@ pres_choices = [
     "Bill Clinton",
     "George W. Bush",
     "Barack Obama",
-    "Donald Trump",
-    "Joe Biden"
 ]
 
 workset_id = "66477ada2600004a07132b23"
