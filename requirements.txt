@@ -1,0 +1,5 @@
+guidance
+tiktoken
+requests
+rich
+llama-cpp-python
