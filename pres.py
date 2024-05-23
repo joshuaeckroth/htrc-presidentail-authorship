@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import rich.progress
 from guidance import models, select, assistant, user, system
 import itertools
@@ -99,27 +100,30 @@ with rich.progress.Progress() as progress:
                     continue
                 if 'tokensCount' not in page['body'] or page['body']['tokensCount'] is None:
                     continue
-                fulltxt += " ".join(page['body']['tokensCount'].keys())
+                fulltxt += " ".join(filter(lambda t: re.search(r'[A-Za-z]+', t), page['body']['tokensCount'].keys()))
             # sliding window of 300 tokens
             tokens = cl100k_base.encode(fulltxt)
             prompts = []
             for i in range(0, len(tokens)-300, 100):
                 prompts.append(tokens[i:i+300])
-                if len(prompts) == 50:
+                if len(prompts) == 30:
                     break
             votes = Counter()
             for idx, prompt in enumerate(prompts):
-                model.reset()
-                console.print("Prompt "+str(idx)+": [white]"+cl100k_base.decode(prompt)+"[/white]")
-                model += "<|user|>Which president wrote these papers?\n\n"+cl100k_base.decode(prompt)+"<|end|>\n<|assistant|>President: \n"
-                lm = model + select(pres_choices, name="pres")
-                votes[lm['pres']] += 1
-                console.print("Guess "+str(idx)+": [yellow]"+lm['pres']+f"[/yellow]")
+                try:
+                    model.reset()
+                    console.print("Prompt "+str(idx)+": [white]"+cl100k_base.decode(prompt)+"[/white]")
+                    model += "<|user|>Which president wrote these papers?\n\n"+cl100k_base.decode(prompt)+"<|end|>\n<|assistant|>President: \n"
+                    lm = model + select(pres_choices, name="pres")
+                    votes[lm['pres']] += 1
+                    console.print("Guess "+str(idx)+": [yellow]"+lm['pres']+f"[/yellow]")
+                except Exception as e:
+                    console.print_exception()
             console.print("Votes: "+str(votes))
             # get most frequent guess
             final_pres_choice = votes.most_common(1)[0][0]
             console.print("Final guess: [bold green]"+final_pres_choice+"[/bold green]")
-            results[htid] = final_pres_choice
+            results[htid] = {"predicted": final_pres_choice, "votes": dict(votes)}
         except Exception as e:
             console.print_exception()
             results[htid] = None
